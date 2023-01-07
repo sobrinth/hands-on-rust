@@ -4,8 +4,16 @@ use crate::prelude::*;
 #[read_component(Point)]
 #[read_component(Name)]
 #[read_component(Health)]
+#[read_component(FieldOfView)]
+#[read_component(Player)]
 pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camera: &Camera) {
     let mut positions = <(Entity, &Point, &Name)>::query();
+
+    let player_pov = <&FieldOfView>::query()
+        .filter(component::<Player>())
+        .iter(ecs)
+        .nth(0)
+        .unwrap();
 
     let offset = Point::new(camera.left_x, camera.top_y);
     let map_pos = *mouse_pos + offset;
@@ -13,7 +21,7 @@ pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camer
     draw_batch.target(2);
     positions
         .iter(ecs)
-        .filter(|(_, pos, _)| **pos == map_pos)
+        .filter(|(_, pos, _)| **pos == map_pos && player_pov.visible_tiles.contains(&pos))
         .for_each(|(entity, _, name)| {
             let screen_pos = *mouse_pos * 4;
             let display =
