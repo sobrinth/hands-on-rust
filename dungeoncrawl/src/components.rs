@@ -1,5 +1,5 @@
 pub use crate::prelude::*;
-use std::collections::{hash_set, HashSet};
+use std::collections::HashSet;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
