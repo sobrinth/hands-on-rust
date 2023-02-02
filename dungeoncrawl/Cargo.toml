@@ -9,3 +9,5 @@ edition = "2021"
 [dependencies]
 bracket-lib = "=0.8.1" # Game Engine
 legion = "=0.3.1" # ECS
+serde = { version = "=1.0.115" } # Serializing / Deserializing
+ron = "=0.6.1" # Rusty Object Notation
