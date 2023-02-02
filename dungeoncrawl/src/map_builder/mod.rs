@@ -137,6 +137,25 @@ impl MapBuilder {
         }
     }
 
+    fn fill_map_border(&mut self) {
+        for x in 0..SCREEN_WIDTH {
+            if let Some(idx) = self.map.try_idx(Point::new(x, 0)) {
+                self.map.tiles[idx as usize] = TileType::Wall;
+            }
+            if let Some(idx) = self.map.try_idx(Point::new(x, SCREEN_HEIGHT - 1)) {
+                self.map.tiles[idx as usize] = TileType::Wall;
+            }
+        }
+        for y in 0..SCREEN_HEIGHT {
+            if let Some(idx) = self.map.try_idx(Point::new(0, y)) {
+                self.map.tiles[idx as usize] = TileType::Wall;
+            }
+            if let Some(idx) = self.map.try_idx(Point::new(SCREEN_WIDTH - 1, y)) {
+                self.map.tiles[idx as usize] = TileType::Wall;
+            }
+        }
+    }
+
     fn spawn_monsters(&self, start: &Point, rng: &mut RandomNumberGenerator) -> Vec<Point> {
         const NUM_MONSTERS: usize = 50;
         let mut spawnable_tiles: Vec<Point> = self
