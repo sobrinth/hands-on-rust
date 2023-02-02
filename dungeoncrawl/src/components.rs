@@ -40,6 +40,12 @@ pub struct WantsToAttack {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Damage(pub i32);
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Weapon;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ChasingPlayer;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
