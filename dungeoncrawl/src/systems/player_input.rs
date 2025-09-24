@@ -19,14 +19,10 @@ pub fn player_input(
     if let Some(key) = key {
         let delta = match key {
             // Player Movement
-            VirtualKeyCode::Left => Point::new(-1, 0),
-            VirtualKeyCode::Right => Point::new(1, 0),
-            VirtualKeyCode::Up => Point::new(0, -1),
-            VirtualKeyCode::Down => Point::new(0, 1),
-            VirtualKeyCode::A => Point::new(-1, 0),
-            VirtualKeyCode::D => Point::new(1, 0),
-            VirtualKeyCode::W => Point::new(0, -1),
-            VirtualKeyCode::S => Point::new(0, 1),
+            VirtualKeyCode::Left | VirtualKeyCode::A => Point::new(-1, 0),
+            VirtualKeyCode::Right | VirtualKeyCode::D => Point::new(1, 0),
+            VirtualKeyCode::Up | VirtualKeyCode::W => Point::new(0, -1),
+            VirtualKeyCode::Down | VirtualKeyCode::S => Point::new(0, 1),
             // Item usage
             VirtualKeyCode::Key1 => use_item(0, ecs, commands),
             VirtualKeyCode::Key2 => use_item(1, ecs, commands),
@@ -40,13 +36,14 @@ pub fn player_input(
             VirtualKeyCode::G => {
                 let (player, player_pos) = players
                     .iter(ecs)
-                    .find_map(|(entity, pos)| Some((*entity, *pos)))
+                    .map(|(entity, pos)| (*entity, *pos))
+                    .next()
                     .unwrap();
 
                 let mut items = <(Entity, &Item, &Point)>::query();
                 items
                     .iter(ecs)
-                    .filter(|(_entity, _item, &item_pos)| item_pos == player_pos)
+                    .filter(|(_entity, _item, item_pos)| **item_pos == player_pos)
                     .for_each(|(entity, _item, _item_pos)| {
                         commands.remove_component::<Point>(*entity);
                         commands.add_component(*entity, Carried(player));
@@ -58,7 +55,7 @@ pub fn player_input(
                                     .filter(|(_, c, _)| c.0 == player)
                                     .for_each(|(e, _, _)| {
                                         commands.remove(*e);
-                                    })
+                                    });
                             }
                         }
                     });
@@ -69,7 +66,8 @@ pub fn player_input(
 
         let (player_entity, destination) = players
             .iter(ecs)
-            .find_map(|(entity, pos)| Some((*entity, *pos + delta)))
+            .map(|(entity, pos)| (*entity, *pos + delta))
+            .next()
             .unwrap();
 
         let mut enemies = <(Entity, &Point)>::query().filter(component::<Enemy>());
@@ -106,7 +104,8 @@ pub fn player_input(
 fn use_item(n: usize, ecs: &mut SubWorld, commands: &mut CommandBuffer) -> Point {
     let player_entity = <(Entity, &Player)>::query()
         .iter(ecs)
-        .find_map(|(entity, _player)| Some(*entity))
+        .map(|(entity, _player)| *entity)
+        .next()
         .unwrap();
 
     let item_entity = <(Entity, &Item, &Carried)>::query()
@@ -114,7 +113,8 @@ fn use_item(n: usize, ecs: &mut SubWorld, commands: &mut CommandBuffer) -> Point
         .filter(|(_, _, carried)| carried.0 == player_entity)
         .enumerate()
         .filter(|(item_count, (_, _, _))| *item_count == n)
-        .find_map(|(_, (item_entity, _, _))| Some(*item_entity));
+        .map(|(_, (item_entity, _, _))| *item_entity)
+        .next();
 
     if let Some(item_entity) = item_entity {
         commands.push((
@@ -124,6 +124,6 @@ fn use_item(n: usize, ecs: &mut SubWorld, commands: &mut CommandBuffer) -> Point
                 item: item_entity,
             },
         ));
-    };
+    }
     Point::zero()
 }

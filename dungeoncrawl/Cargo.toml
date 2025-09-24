@@ -2,12 +2,12 @@
 name = "dungeoncrawl"
 version = "0.1.0"
 authors = ["Sobrinth <hey@sobrinth.net>"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bracket-lib = "=0.8.1" # Game Engine
+bracket-lib = "=0.8.7" # Game Engine
 legion = "=0.3.1" # ECS
 serde = { version = "=1.0.115" } # Serializing / Deserializing
 ron = "=0.6.1" # Rusty Object Notation

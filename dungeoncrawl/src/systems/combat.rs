@@ -14,7 +14,7 @@ pub fn combat(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
         .map(|(entity, attack)| (*entity, attack.attacker, attack.victim))
         .collect();
 
-    victims.iter().for_each(|(message, attacker, victim)| {
+    for (message, attacker, victim) in &victims {
         let is_player = ecs
             .entry_ref(*victim)
             .unwrap()
@@ -38,7 +38,7 @@ pub fn combat(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
             .sum();
         let final_damage = base_damage + weapon_damage;
 
-        if let Ok(mut health) = ecs
+        if let Ok(health) = ecs
             .entry_mut(*victim)
             .unwrap()
             .get_component_mut::<Health>()
@@ -49,5 +49,5 @@ pub fn combat(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
             }
         }
         commands.remove(*message);
-    });
+    }
 }

@@ -1,6 +1,7 @@
 use super::MapArchitect;
 use crate::prelude::*;
 
+#[allow(dead_code)]
 pub struct EmptyArchitect {}
 
 impl MapArchitect for EmptyArchitect {
@@ -21,7 +22,7 @@ impl MapArchitect for EmptyArchitect {
             mb.monster_spawns.push(Point::new(
                 rng.range(1, SCREEN_WIDTH),
                 rng.range(1, SCREEN_HEIGHT),
-            ))
+            ));
         }
         mb
     }
